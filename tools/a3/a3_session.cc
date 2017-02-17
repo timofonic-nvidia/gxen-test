@@ -66,6 +66,7 @@ void session::main() {
 
 void session::initialize(uint32_t id) {
     std::vector<char> name(200);
+    A3_LOG("DEBUG: session initialize id=%u\n", id);
 
     // request queue
     {

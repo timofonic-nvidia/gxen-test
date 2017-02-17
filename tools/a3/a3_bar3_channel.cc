@@ -51,6 +51,7 @@ void bar3_channel_t::detach(context* ctx, uint64_t addr) {
 }
 
 void bar3_channel_t::shadow(context* ctx) {
+    // A3_LOG("DEBUG: BAR3 channel shadow entered\n");
     if (ctx->para_virtualized()) {
         return;
     }

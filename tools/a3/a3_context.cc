@@ -97,11 +97,13 @@ void context::initialize(int dom, bool para) {
 // main entry
 bool context::handle(const command& cmd) {
     if (cmd.type == command::TYPE_INIT) {
+        A3_LOG("DEBUG: init command\n");
         initialize(cmd.value, cmd.offset != 0);
         return false;
     }
 
     if (cmd.type == command::TYPE_BAR3) {
+        A3_LOG("DEBUG: BAR3 cmd, value=%"PRIx32", offset=%"PRIx32"\n", cmd.value, cmd.offset);
         uint64_t tmp = static_cast<uint64_t>(cmd.value) << 12;
         tmp += cmd.offset;
         bar3_address_ = tmp;
@@ -110,6 +112,7 @@ bool context::handle(const command& cmd) {
     }
 
     if (cmd.type == command::TYPE_UTILITY) {
+        A3_LOG("DEBUG: UTILITY cmd, bar=%d, value=%"PRIx32", offset=%"PRIx32"\n", cmd.bar(), cmd.value, cmd.offset);
         switch (cmd.value) {
         case command::UTILITY_REGISTER_READ: {
                 const uint32_t status = registers::read32(cmd.offset);
@@ -182,7 +185,7 @@ bool context::handle(const command& cmd) {
             break;
         case command::BAR3:
             read_bar3(cmd);
-            A3_LOG("BAR3 read  0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, buffer()->value);
+            // A3_LOG("BAR3 read  0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, buffer()->value);
             break;
         case command::BAR4:
             read_bar4(cmd);
@@ -191,6 +194,7 @@ bool context::handle(const command& cmd) {
         return true;
     }
 
+    A3_LOG("DEBUG: unhandled command\n");
     return false;
 }
 
@@ -232,8 +236,9 @@ void context::flush_tlb(uint32_t vspace, uint32_t trigger) {
     uint64_t already = 0;
     channel::page_table_reuse_t* reuse;
 
-    A3_LOG("TLB flush 0x%" PRIX64 " pd\n", page_directory);
+    // A3_LOG("TLB flush 0x%" PRIX64 " pd\n", page_directory);
 
+    // A3_LOG("BAR1_pd=0x%"PRIX64" BAR3_pd=0x%"PRIX64"\n", bar1_channel()->table()->page_directory_address(), bar3_channel()->page_directory_address());
     // rescan page tables
     if (bar1_channel()->table()->page_directory_address() == page_directory) {
         // BAR1

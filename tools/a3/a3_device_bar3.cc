@@ -71,7 +71,7 @@ void device_bar3::refresh() {
 void device_bar3::map_xen_page(context* ctx, uint64_t offset) {
     const uint64_t guest = ctx->bar3_address() + offset;
     const uint64_t host = address() + ctx->id() * A3_BAR3_ARENA_SIZE + offset;
-    A3_LOG("mapping %" PRIx64 " to %" PRIx64 "\n", guest, host);
+    A3_LOG("BAR3 mapping %" PRIx64 " to %" PRIx64 "\n", guest, host);
     if (a3::flags::bar3_remapping) {
         a3_xen_add_memory_mapping(device::instance()->xl_ctx(), ctx->domid(), guest >> kPAGE_SHIFT, host >> kPAGE_SHIFT, 1);
     }
@@ -80,7 +80,7 @@ void device_bar3::map_xen_page(context* ctx, uint64_t offset) {
 void device_bar3::unmap_xen_page(context* ctx, uint64_t offset) {
     const uint64_t guest = ctx->bar3_address() + offset;
     const uint64_t host = address() + ctx->id() * A3_BAR3_ARENA_SIZE + offset;
-    A3_LOG("unmapping %" PRIx64 " to %" PRIx64 "\n", guest, host);
+    A3_LOG("BAR3 unmapping %" PRIx64 " to %" PRIx64 "\n", guest, host);
     if (a3::flags::bar3_remapping) {
         a3_xen_remove_memory_mapping(device::instance()->xl_ctx(), ctx->domid(), guest >> kPAGE_SHIFT, host >> kPAGE_SHIFT, 1);
     }
@@ -168,6 +168,7 @@ uint64_t device_bar3::resolve(context* ctx, uint64_t gvaddr, struct software_pag
     }
 
     const uint64_t hvaddr = gvaddr + ctx->id() * A3_BAR3_ARENA_SIZE;
+    //A3_LOG("DEBUG: bar3 resolve: gvaddr=0x%"PRIx64" hvaddr=0x%"PRIx64" small_size=0x%lx, large_size=0x%lx, kSmallPageSize=0x%x, kLargePageSize=0x%x\n", gvaddr, hvaddr, small_.size(), large_.size(), kSMALL_PAGE_SIZE, kLARGE_PAGE_SIZE);
     {
         const uint64_t index = hvaddr / kSMALL_PAGE_SIZE;
         const uint64_t rest = hvaddr % kSMALL_PAGE_SIZE;
@@ -180,6 +181,7 @@ uint64_t device_bar3::resolve(context* ctx, uint64_t gvaddr, struct software_pag
                 const uint64_t address = entry.phys().address;
                 return (address << 12) + rest;
             }
+            //A3_LOG("DEBUG: bar3 resolve: small[%lu] entry not present, rest=0x%lx\n", index, rest);
         }
     }
 
@@ -195,6 +197,7 @@ uint64_t device_bar3::resolve(context* ctx, uint64_t gvaddr, struct software_pag
                 const uint64_t address = entry.phys().address;
                 return (address << 12) + rest;
             }
+            //A3_LOG("DEBUG: bar3 resolve: large[%lu] entry not present, rest=0x%lx\n", index, rest);
         }
     }
 
@@ -293,6 +296,7 @@ void device_bar3::refresh_table(context* ctx, uint64_t phys) {
         return;
     }
 
+    A3_LOG("DEBUG: refresh BAR3 mapping table: phys=%"PRIx64"\n", phys);
     // TODO(Yusuke Suzuki): validation needed
     struct page_directory dir = page_directory::create(&pmem, phys);
     if (dir.large_page_table_present) {

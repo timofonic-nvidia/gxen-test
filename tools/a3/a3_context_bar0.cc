@@ -296,6 +296,8 @@ void context::write_bar0(const command& cmd) {
 
     registers::accessor regs;
     regs.write(cmd.offset, cmd.value, cmd.size());
+
+    // A3_LOG("DEBUG: bar0_write value=0x%x verify @offset=0x%x value=0x%x\n", cmd.value, cmd.offset, regs.read(cmd.offset, cmd.size()));
 }
 
 void context::read_bar0(const command& cmd) {
@@ -472,6 +474,8 @@ void context::read_bar0(const command& cmd) {
 
     registers::accessor regs;
     buffer()->value = regs.read(cmd.offset, cmd.size());
+
+    // A3_LOG("DEBUG: bar0_read @offset=0x%x value=0x%x\n", cmd.offset, buffer()->value);
 }
 
 // PCOPY channel inst decode

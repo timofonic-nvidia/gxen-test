@@ -2,6 +2,7 @@
 #define A3_DEVICE_H_
 #include <vector>
 #include <pciaccess.h>
+#include <boost/array.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
