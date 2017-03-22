@@ -177,15 +177,16 @@ bool context::handle(const command& cmd) {
         switch (cmd.bar()) {
         case command::BAR0:
             write_bar0(cmd);
-            A3_LOG("BAR0 write 0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, cmd.value);
+            // A3_LOG("BAR0 write 0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, cmd.value);
             break;
         case command::BAR1:
             write_bar1(cmd);
-            A3_LOG("BAR1 write 0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, cmd.value);
+            // A3_LOG("BAR1 write 0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, cmd.value);
             break;
         case command::BAR3:
             write_bar3(cmd);
-            A3_LOG("BAR3 write 0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, cmd.value);
+            count_bar3_access(2);
+            // A3_LOG("BAR3 write 0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, cmd.value);
             break;
         case command::BAR4:
             write_bar4(cmd);
@@ -199,24 +200,57 @@ bool context::handle(const command& cmd) {
         switch (cmd.bar()) {
         case command::BAR0:
             read_bar0(cmd);
-            A3_LOG("BAR0 read  0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, buffer()->value);
+            // A3_LOG("BAR0 read  0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, buffer()->value);
             break;
         case command::BAR1:
             read_bar1(cmd);
-            A3_LOG("BAR1 read  0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, buffer()->value);
+            // A3_LOG("BAR1 read  0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, buffer()->value);
             break;
         case command::BAR3:
             read_bar3(cmd);
-            A3_LOG("BAR3 read  0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, buffer()->value);
+            // count_bar3_access(1);
+            // A3_LOG("BAR3 read  0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, buffer()->value);
             break;
         case command::BAR4:
             read_bar4(cmd);
             break;
         }
     }
-    inspect(cmd, buffer()->value);
+    // inspect(cmd, buffer()->value);
 
     return wait;
+}
+
+void context::count_bar3_access(int type) { // 0 reset, 1 read, 2 write
+    static uint64_t bar3_read = 0;
+    static uint64_t bar3_write = 0;
+
+    switch (type) {
+        case 0:
+            bar3_read = bar3_write = 0;
+            break;
+        case 1:
+            bar3_read++;
+            // A3_LOG("BAR3 READ %" PRIu64 "\n", bar3_read);
+            break;
+        case 2:
+            bar3_write++;
+            // A3_LOG("BAR3 WRITE %" PRIu64 "\n", bar3_write);
+            break;
+    }
+}
+
+void context::count_shwpt_access(int type) { // 0 reset, 1 access
+    static uint64_t shwpt_access = 0;
+
+    switch (type) {
+        case 0:
+            shwpt_access = 0;
+            break;
+        case 1:
+            shwpt_access++;
+            A3_LOG("Shadow PageTable UPDATE %" PRIu64 "\n", shwpt_access);
+    }
 }
 
 void context::playlist_update(uint32_t reg_addr, uint32_t cmd) {
@@ -339,7 +373,7 @@ struct page_entry context::guest_to_host(const struct page_entry& entry) {
             // const uint64_t h_address = ctx->get_phys_address(g_address);
             result.address = (uint32_t)(mfn);
             // TODO(Yusuke Suzuki): Validate host physical address in Xen side
-            A3_LOG("  changing to sys addr 0x%" PRIx32 " to 0x%" PRIx32 "\n", gfn, mfn);
+            // A3_LOG("  changing to sys addr 0x%" PRIx32 " to 0x%" PRIx32 "\n", gfn, mfn);
         }
     }
     return result;

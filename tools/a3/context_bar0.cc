@@ -172,7 +172,7 @@ void context::write_bar0(const command& cmd) {
             registers::accessor regs;
             regs.write32(0x400204, reg32(0x400204));
             regs.write32(0x400200, cmd.value);
-            A3_LOG("icmd %" PRIX32 "|%" PRIX32 "\n", reg32(0x400204), cmd.value);
+            // A3_LOG("icmd %" PRIX32 "|%" PRIX32 "\n", reg32(0x400204), cmd.value);
             return;
         }
 
@@ -185,7 +185,7 @@ void context::write_bar0(const command& cmd) {
             registers::accessor regs;
             regs.write32(0x40448c, reg32(0x40448c));
             regs.write32(0x404488, cmd.value);
-            A3_LOG("method %" PRIX32 "|%" PRIX32 "\n", reg32(0x40448c), cmd.value);
+            // A3_LOG("method %" PRIX32 "|%" PRIX32 "\n", reg32(0x40448c), cmd.value);
             return;
         }
 

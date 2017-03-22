@@ -105,6 +105,8 @@ int main(int argc, char** argv) {
 
     A3_LOG("BDF: %02x:%02x.%01x\n", bdf.bus, bdf.dev, bdf.func);
     A3_LOG("through: %s\n", cmd.Exist("through") ? "enabled" : "disabled");
+    A3_LOG("lazy-shadowing: %s\n", cmd.Exist("lazy-shadowing") ? "enabled" : "disabled");
+    A3_LOG("bar3-remapping: %s\n", cmd.Exist("bar3-remapping") ? "enabled" : "disabled");
 
     // set flags
     a3::flags::lazy_shadowing = cmd.Exist("lazy-shadowing");
