@@ -67,21 +67,22 @@ void sampler_t::run() {
             if (!scheduler_->contexts().empty()) {
                 A3_SYNCHRONIZED(scheduler_->fire_mutex()) {
                     if (bandwidth_500_ != boost::posix_time::microseconds(0)) {
-                        // A3_FATAL(stdout, "UTIL: LOG %" PRIu64 "\n", count);
+                        A3_FATAL(stdout, "UTIL: LOG %" PRIu64 "\n", count);
                         for (context& ctx : scheduler_->contexts()) {
-                            // A3_FATAL(stdout, "UTIL[100]: %d => %f\n", ctx.id(), (static_cast<double>(ctx.sampling_bandwidth_used_100().total_microseconds()) / sampling_bandwidth_100_.total_microseconds()));
+                            A3_FATAL(stdout, "UTIL[100]: %d => %f\n", ctx.id(), (static_cast<double>(ctx.sampling_bandwidth_used_100().total_microseconds()) / bandwidth_100_.total_microseconds()));
                             if (points % 5 == 4) {
-                                // A3_FATAL(stdout, "UTIL[500]: %d => %f\n", ctx.id(), (static_cast<double>(ctx.sampling_bandwidth_used().total_microseconds()) / sampling_bandwidth_.total_microseconds()));
+                                A3_FATAL(stdout, "UTIL[500]: %d => %f\n", ctx.id(), (static_cast<double>(ctx.sampling_bandwidth_used().total_microseconds()) / bandwidth_500_.total_microseconds()));
                             }
                             ctx.clear_sampling_bandwidth_used(points);
                         }
-                        ++count;
-                        points = (points + 1) % 5;
                     }
                     bandwidth_100_ = boost::posix_time::microseconds(0);
                     if (points % 5 == 4) {
                         bandwidth_500_ = boost::posix_time::microseconds(0);
                     }
+                    ++count;
+                    points = (points + 1) % 5;
+
                 }
             }
         }
