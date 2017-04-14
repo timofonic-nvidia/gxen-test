@@ -18,7 +18,7 @@ vcpus = 1
 
 vif = ['type=ioemu, bridge=virbr0' ]
 #disk = ['file:/home/hyu/Projects/guest/xenguest.img,hda,w', 'phy:/dev/cdrom1,hdc:cdrom,r']
-disk = ['file:/home/hyu/Projects/guest/xenguest.img,hda,w', 'file:/home/hyu/Projects/guest/Fedora-16-x86_64-Live-Desktop.iso,hdc:cdrom,r']
+disk = ['file:/home/hyu/Projects/guest/xenguest.img,hda,w', 'tap:aio:/home/hyu/Projects/guest/Fedora-16-x86_64-Live-Desktop.iso,hdc:cdrom,r']
 #boot = 'dca'
 boot = 'cda'
 
