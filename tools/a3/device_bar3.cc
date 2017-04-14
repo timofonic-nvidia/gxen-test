@@ -168,6 +168,7 @@ uint64_t device_bar3::resolve(context* ctx, uint64_t gvaddr, struct software_pag
     }
 
     const uint64_t hvaddr = gvaddr + ctx->id() * A3_BAR3_ARENA_SIZE;
+    // A3_LOG("[DEBUG] bar3 access: gvaddr=%lx, hvaddr=%lx\n", gvaddr, hvaddr);
     {
         const uint64_t index = hvaddr / kSMALL_PAGE_SIZE;
         const uint64_t rest = hvaddr % kSMALL_PAGE_SIZE;

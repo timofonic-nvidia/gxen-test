@@ -185,7 +185,7 @@ bool context::handle(const command& cmd) {
             break;
         case command::BAR3:
             write_bar3(cmd);
-            count_bar3_access(2);
+            // count_bar3_access(2, cmd.size());
             // A3_LOG("BAR3 write 0x%" PRIx32 " 0x%" PRIx32 "\n", cmd.offset, cmd.value);
             break;
         case command::BAR4:
@@ -221,9 +221,10 @@ bool context::handle(const command& cmd) {
     return wait;
 }
 
-void context::count_bar3_access(int type) { // 0 reset, 1 read, 2 write
+void context::count_bar3_access(int type, std::size_t size) { // 0 reset, 1 read, 2 write
     static uint64_t bar3_read = 0;
     static uint64_t bar3_write = 0;
+    static std::size_t bar3_write_size = 0;
 
     switch (type) {
         case 0:
@@ -235,7 +236,8 @@ void context::count_bar3_access(int type) { // 0 reset, 1 read, 2 write
             break;
         case 2:
             bar3_write++;
-            // A3_LOG("BAR3 WRITE %" PRIu64 "\n", bar3_write);
+            bar3_write_size += size;
+            A3_LOG("BAR3 WRITE %" PRIu64 "; SIZE=%ld\n", bar3_write, bar3_write_size);
             break;
     }
 }

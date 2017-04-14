@@ -33,7 +33,7 @@ class context : private boost::noncopyable, public boost::intrusive::list_base_h
     context(session* session, bool through);
     virtual ~context();
     bool handle(const command& command);
-    void count_bar3_access(int type);
+    void count_bar3_access(int type, std::size_t size);
     void count_shwpt_access(int type);
 
     void write_bar0(const command& command);
