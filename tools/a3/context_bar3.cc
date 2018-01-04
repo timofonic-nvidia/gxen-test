@@ -33,6 +33,7 @@ namespace a3 {
 
 void context::write_bar3(const command& cmd) {
     const uint64_t gphys = device()->bar3()->resolve(this, cmd.offset, nullptr);
+    // A3_LOG("[DEBUG] write bar3: gphys=%lx, cmd_offset=%lx\n", gphys, cmd.offset);
     if (gphys != UINT64_MAX) {
         pmem::accessor pmem;
         pmem.write(gphys, cmd.value, cmd.size());

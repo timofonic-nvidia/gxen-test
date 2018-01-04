@@ -143,6 +143,7 @@ void credit_scheduler_t::submit(context* ctx) {
         }
 
         const auto duration = utilization_.elapsed();
+        // A3_LOG("[DEBUG] command length = %ld\n", duration.total_microseconds());
         bandwidth_ += duration;
         sampler_->add(duration);
         ctx->update_budget(duration);

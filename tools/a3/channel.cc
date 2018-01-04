@@ -191,6 +191,7 @@ void channel::flush(context* ctx) {
     }
 
     // A3_FATAL(stdout, "shadowing times %" PRIu64 "\n", ctx->increment_shadowing_times());
+    ctx->count_shwpt_access(1);
 
     // clear dirty flags
     channel* origin = nullptr;

@@ -1,0 +1,46 @@
+import os, re
+arch = os.uname()[4]
+if re.search('64', arch):
+	arch_libdir = 'lib64'
+else:
+	arch_libdir = 'lib'
+
+kernel = "/usr/lib/xen/boot/hvmloader"
+#type = "hvm"
+#kernel = "/home/hyu/Projects/gdev/linux-3.6.5-for-gxen/arch/x86/boot/bzImage"
+#loader = "/usr/lib/xen/boot/hvmloader"
+#cmdline = "nouveau.noaccel=0 nouveau.modeset=2"
+
+builder = 'hvm'
+memory = 4096
+name = "XenGuest0"
+vcpus = 1
+
+vif = ['type=ioemu, bridge=virbr0' ]
+#disk = ['file:/home/hyu/Projects/guest/xenguest.img,hda,w', 'phy:/dev/cdrom1,hdc:cdrom,r']
+disk = ['file:/home/hyu/Projects/guest/xenguest.img,hda,w', 'tap:aio:/home/hyu/Projects/guest/Fedora-16-x86_64-Live-Desktop.iso,hdc:cdrom,r']
+#boot = 'dca'
+boot = 'cda'
+
+device_model = '/usr/' + arch_libdir + '/xen/bin/qemu-dm'
+sdl = 0
+vnc = 0
+#vnc = 1
+#vncpasswd = ''
+#vncconsole = 1
+serial = 'pty'
+#acpi = 1
+
+# GXen
+nvc0 = '0'
+iommu = 0
+nographic = 1
+#xen_platform_pci = 1
+vif = [ 'bridge=virbr0' ]
+
+#stdvga = 1
+#vga = 'none'
+
+#gfx_passthru = 1
+#pci = ['03:00.0', '03:00.1']
+#pci_permissive = 1
